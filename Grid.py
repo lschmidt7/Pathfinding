@@ -17,7 +17,6 @@ class Grid():
 
     def generateObstacles(self,percent,sizeOfQuad):
         nobstacles = math.pow(self.size,2)*(percent/100.0)
-        print(nobstacles)
         while nobstacles>0:
             posx = randint(0,self.size-1)
             posy = randint(0,self.size-1)
@@ -36,9 +35,10 @@ class Grid():
             posy = randint(0,self.size-1)
             if(self.grid[posx,posy]!=1):
                 self.grid[posx,posy] = 2
-                car.pos = (sizeOfQuad[0]*posx,sizeOfQuad[1]*posy)
+                car.pos = (posx,posy)
                 spawned = True
                 self.car = car
+        return self.car.pos
 
     def createObjective(self,sizeOfQuad):
         objective = Objective(sizeOfQuad)
@@ -48,11 +48,12 @@ class Grid():
             posy = randint(0,self.size-1)
             if(self.grid[posx,posy]!=1 and self.grid[posx,posy]!=2):
                 self.grid[posx,posy] = 3
-                objective.pos = (sizeOfQuad[0]*posx,sizeOfQuad[1]*posy)
+                objective.pos = (posx,posy)
                 spawned = True
                 self.objective = objective
+        return self.objective.pos
 
-    def drawGrid(self,surface,screenSize):
+    def drawGrid(self,surface,screenSize,sizeOfQuad):
         spacey = screenSize[1]/self.size
         spacex = screenSize[0]/self.size
         for i in range(self.size):
@@ -60,5 +61,11 @@ class Grid():
             pygame.draw.line(surface, pygame.Color("red") , (i*spacex,0), (i*spacex,screenSize[1]), 1)
         for i in range(len(self.stones)):
             self.stones[i].drawStone(surface)
-        self.car.drawCar(surface)
-        self.objective.drawObjective(surface)
+        self.car.drawCar(surface,sizeOfQuad)
+        self.objective.drawObjective(surface,sizeOfQuad)
+
+    def drawPath(self,path,surface,screenSize):
+        spacey = screenSize[1]/self.size
+        spacex = screenSize[0]/self.size
+        for i in range(len(path)-1):
+            pygame.draw.line(surface, pygame.Color("yellow") , (path[i][0]*spacex,path[i][1]*spacey), (path[i+1][0]*spacex,path[i+1][1]*spacey), 1)

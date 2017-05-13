@@ -4,8 +4,11 @@ from sys import exit
 from Grid import Grid
 from Screen import Screen
 from Obstacle import Obstacle
+import sys
+from AStar import AStar
 
-size = 30
+size = int(sys.argv[1])
+numOfObstacles = int(sys.argv[2])
 
 pygame.init()
 
@@ -20,9 +23,12 @@ pygame.display.set_caption("Pathfinding A*")
 s.display.fill((255,255,255))
 pygame.display.flip()
 grid = Grid(size)
-grid.generateObstacles(10,sizeOfQuad)
-grid.createCar(sizeOfQuad)
-grid.createObjective(sizeOfQuad)
+grid.generateObstacles(numOfObstacles,sizeOfQuad)
+carPos = grid.createCar(sizeOfQuad)
+objectivePos = grid.createObjective(sizeOfQuad)
+
+astar = AStar(carPos,objectivePos,grid.grid,size)
+path = astar.run()
 
 while True:
     for event in pygame.event.get():
@@ -30,5 +36,6 @@ while True:
             exit()
     s.display.blit(pygame.Surface(s.getSize()), (0,0))
     s.display.fill((255,255,255))
-    grid.drawGrid(s.display,s.getSize())
+    grid.drawGrid(s.display,s.getSize(),sizeOfQuad)
+    astar.drawPath(s.display,s.getSize())
     pygame.display.update()
