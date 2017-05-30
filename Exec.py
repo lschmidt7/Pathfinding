@@ -4,8 +4,8 @@ from sys import exit
 from Grid import Grid
 from Screen import Screen
 from Obstacle import Obstacle
-import sys
 from AStar import AStar
+import sys
 
 size = int(sys.argv[1])
 numOfObstacles = int(sys.argv[2])
@@ -27,8 +27,8 @@ grid.generateObstacles(numOfObstacles,sizeOfQuad)
 carPos = grid.createCar(sizeOfQuad)
 objectivePos = grid.createObjective(sizeOfQuad)
 
-astar = AStar(carPos,objectivePos,grid.grid,size)
-path = astar.run()
+a = AStar(grid.grid,carPos,objectivePos)
+path = a.run()
 
 while True:
     for event in pygame.event.get():
@@ -37,5 +37,6 @@ while True:
     s.display.blit(pygame.Surface(s.getSize()), (0,0))
     s.display.fill((255,255,255))
     grid.drawGrid(s.display,s.getSize(),sizeOfQuad)
-    astar.drawPath(s.display,s.getSize())
+    if(len(path)>0):
+        grid.drawPath(path,s.display,s.getSize())
     pygame.display.update()

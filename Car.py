@@ -4,7 +4,7 @@ class Car():
 
     def __init__(self,(sizex,sizey)):
         self.pos = (0,0)
-        self.sprite = pygame.image.load('car.png').convert_alpha()
+        self.sprite = pygame.image.load('Img/car.png').convert_alpha()
         self.scale(sizex,sizey)
 
     def drawCar(self,screen,sizeOfQuad):

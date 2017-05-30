@@ -7,7 +7,7 @@ class Obstacle():
         self.pos = (0,0)
         obstacles = ['stone.png','tree.png','house.png']
         spritename = obstacles[randint(0,2)]
-        self.sprite = pygame.image.load(spritename).convert_alpha()
+        self.sprite = pygame.image.load("Img/"+spritename).convert_alpha()
         self.scale(sizex,sizey)
 
     def drawStone(self,screen):

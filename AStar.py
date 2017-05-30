@@ -1,65 +1,61 @@
+# -*- coding: utf-8 -*-
 from math import hypot
 import pygame
+from Node import Node
+
+'''
+grid contem numeros 0 (espaços livres), 1 (obstaculos), 2 (carro), 3 (objetivo)
+'''
 
 class AStar():
 
-    def __init__(self,start,finish,grid,size):
-        self.size = size
-        self.start = start
-        self.finish = finish
-        self.opened = []
+    def __init__(self,grid,posinit,posobj):
+        self.node = Node(posinit,0)
+        self.grid = grid
+        self.objetivo = posobj
+        self.tam = len(grid)
+        self.opened = [self.node]
         self.closed = []
         self.path = []
-        self.grid = grid
-        self.opened.append(start)
-        print(start)
 
-    def run(self):
-        while(self.finish not in self.closed):
-            if(len(self.opened)>0):
-                m = self.menor()
-                self.path.append(m)
-                self.vizinhos(m)
-        return self.path
+    # ordena uma fila segundo seu custo f
+    def sortQueue(self):
+        self.opened.sort(key=lambda q: q.f_coast)
 
-    def distance(self,p1,p2):
-        return hypot(p1[0]-p2[0],p1[1]-p2[1])
+    def verify(self,node):
+        for c in self.opened:
+            if(c.pos==node.pos):
+                return False
+        for c in self.closed:
+            if(c.pos==node.pos):
+                return False
+        return True
 
-    def menor(self):
-        menor = self.opened[0]
-        menorDist = self.distance(menor,self.finish)
-        for x in self.opened:
-            menorDistAux = self.distance(x,self.finish)
-            if(menorDistAux<menorDist):
-                menorDist = menorDistAux
-                menor=x
-        self.opened.remove(menor)
-        self.closed.append(menor)
-        return menor
+    def valida(self,childs):
+        for c in childs:
+            if(c.pos[0]>=0 and c.pos[0]<self.tam and c.pos[1]>=0 and c.pos[1]<self.tam):
+                if(self.grid[c.pos[0],c.pos[1]]!=1 and self.verify(c)):
+                    c.calcCosts(self.objetivo)
+                    self.opened.append(c)
 
-    def vizinhos(self,ponto):
-        self.opened=[]
-        top = (ponto[0],ponto[1]+1)
-        bottom = (ponto[0],ponto[1]-1)
-        right = (ponto[0]+1,ponto[1])
-        left = (ponto[0]-1,ponto[1])
-        if(self.valida(top) and self.grid[top[0],top[1]]!=1 and top not in self.closed):
-            self.opened.append(top)
-        if(self.valida(bottom) and self.grid[bottom[0],bottom[1]]!=1 and bottom not in self.closed):
-            self.opened.append(bottom)
-        if(self.valida(left) and self.grid[left[0],left[1]]!=1 and left not in self.closed):
-            self.opened.append(left)
-        if(self.valida(right) and self.grid[right[0],right[1]]!=1 and right not in self.closed):
-            self.opened.append(right)
-
-    def valida(self,ponto):
-        if(ponto[0]<self.size and ponto[0]>=0 and ponto[1]<self.size and ponto[1]>=0):
+    def arraived(self,n):
+        if(self.grid[n.pos[0],n.pos[1]]==3):
             return True
         return False
 
-    def drawPath(self,surface,screenSize):
-        spacey = screenSize[1]/self.size
-        spacex = screenSize[0]/self.size
-        if(len(self.path)>1):
-            for i in range(len(self.path)-1):
-                pygame.draw.line(surface, pygame.Color("yellow") , (self.path[i][0]*spacex,self.path[i][1]*spacey), (self.path[i+1][0]*spacex,self.path[i+1][1]*spacey), 4)
+    def run(self):
+        n = self.opened[0]
+        n.calcCosts(self.objetivo)
+        while(len(self.opened)>0 and not self.arraived(n)):
+            n = self.opened[0]
+            self.opened.remove(n)
+            self.closed.append(n)
+            self.valida(n.generateChilds())
+            self.sortQueue()
+        if(len(self.opened)>0):
+            self.path.append(n.pos)
+            while(n.pai!=None):
+                self.path.append(n.pai.pos)
+                n=n.pai
+        print("Terminou")
+        return self.path

@@ -4,7 +4,7 @@ class Objective():
 
     def __init__(self,(sizex,sizey)):
         self.pos = (0,0)
-        self.sprite = pygame.image.load('flag.png').convert_alpha()
+        self.sprite = pygame.image.load('Img/flag.png').convert_alpha()
         self.scale(sizex,sizey)
 
     def drawObjective(self,screen,sizeOfQuad):
