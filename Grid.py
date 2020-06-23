@@ -68,4 +68,4 @@ class Grid():
         spacey = screenSize[1]/self.size
         spacex = screenSize[0]/self.size
         for i in range(len(path)-1):
-            pygame.draw.line(surface, pygame.Color("yellow") , (path[i][0]*spacex,path[i][1]*spacey), (path[i+1][0]*spacex,path[i+1][1]*spacey), 1)
+            pygame.draw.line(surface, pygame.Color("blue") , (path[i][0]*spacex,path[i][1]*spacey), (path[i+1][0]*spacex,path[i+1][1]*spacey), 3)
