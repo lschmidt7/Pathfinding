@@ -1,1 +1,1 @@
-![Alt text](car.png?raw=true "Title")
+![Alt text](image.png?raw=true "Title")
